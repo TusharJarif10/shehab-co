@@ -41,7 +41,15 @@ const navItems = [
     ],
   },
   { name: "Portfolio", href: "/portfolio", icon: <PhotoIcon className="h-5 w-5" /> },
-  { name: "Shehab & Co", href: "/shehab", icon: <StarIcon className="h-5 w-5" /> },
+  { name: "Shehab & Co", href: "/shehab",
+     icon: <StarIcon className="h-5 w-5" />,
+     submenu: [
+      { name: "Services", href: "/shehab/services" },
+      { name: "Case Studies", href: "/shehab/caseStudies" },
+      { name: "Team", href: "/shehab/team" },
+      { name: "Partners", href: "/shehab/partners" },
+    ],
+    },
   { name: "Blogs", href: "/blogs", icon: <DocumentTextIcon className="h-5 w-5" /> },
 ]
 
