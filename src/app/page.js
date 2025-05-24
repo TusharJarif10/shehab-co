@@ -211,7 +211,7 @@ export default function Home() {
               >
                 <div className="card-body">
                   <div className="text-5xl mb-4">{testimonial.avatar}</div>
-                  <p className="italic mb-6">"{testimonial.quote}"</p>
+                  <p className="italic mb-6">{testimonial.quote}</p>
                   <div>
                     <p className="font-bold">{testimonial.name}</p>
                     <p className="text-sm opacity-70">{testimonial.title}</p>
