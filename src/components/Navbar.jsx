@@ -18,8 +18,9 @@ import { motion } from "framer-motion"
 
 const navItems = [
   { name: "About", href: "/about", icon: <GlobeAltIcon className="h-5 w-5" /> },
-  { name: "Consulting", href: "/consulting",
-     icon: <BriefcaseIcon className="h-5 w-5" />,
+  {
+    name: "Consulting", href: "/consulting",
+    icon: <BriefcaseIcon className="h-5 w-5" />,
     submenu: [
       { name: "Advisory Hour", href: "/consulting/advisory" },
       { name: "Marketing Audit & Strategy", href: "/consulting/audit" },
@@ -27,7 +28,7 @@ const navItems = [
       { name: "Business Consultancy", href: "/consulting/consultancy" },
       { name: "One to One Mentorship", href: "/consulting/mentorship" },
     ],
-    },
+  },
   {
     name: "Industries",
     href: "/industries",
@@ -41,41 +42,44 @@ const navItems = [
     ],
   },
   { name: "Portfolio", href: "/portfolio", icon: <PhotoIcon className="h-5 w-5" /> },
-  { name: "Shehab & Co", href: "/shehab",
-     icon: <StarIcon className="h-5 w-5" />,
-     submenu: [
-      { name: "Services", href: "/shehab/services" },
+  {
+    name: "Shehab & Co", href: "/shehab",
+    icon: <StarIcon className="h-5 w-5" />,
+    submenu: [
+      {
+        name: "Services", href: "/shehab/services",
+        submenu: [
+          { name: "SEO", href: "/shehab/services/seo" },
+          { name: "PPC", href: "/shehab/services/ppc" },
+          { name: "Social Media", href: "/shehab/services/social" },
+          { name: "Content", href: "/shehab/services/content" },
+          { name: "Email Marketing", href: "/shehab/services/email" },
+        ],
+      },
       { name: "Case Studies", href: "/shehab/caseStudies" },
       { name: "Team", href: "/shehab/team" },
       { name: "Partners", href: "/shehab/partners" },
     ],
-    },
+  },
   { name: "Blogs", href: "/blogs", icon: <DocumentTextIcon className="h-5 w-5" /> },
 ]
 
 export default function Navbar() {
   const pathname = usePathname()
-
-  const [theme, setTheme] = useState("corporate") // Default theme
+  const [theme, setTheme] = useState("corporate")
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  const [activeSubmenus, setActiveSubmenus] = useState(new Array(navItems.length).fill(false))
+  const [openMenus, setOpenMenus] = useState({})
   const [isMounted, setIsMounted] = useState(false)
 
-  // Set theme from localStorage only after the component is mounted
   useEffect(() => {
-    setIsMounted(true) // Ensure the client-side rendering logic runs only after mounting
+    setIsMounted(true)
     const storedTheme = localStorage.getItem("theme")
-    if (storedTheme) {
-      setTheme(storedTheme)
-    }
+    if (storedTheme) setTheme(storedTheme)
   }, [])
 
   useEffect(() => {
-    // Update the theme attribute in the HTML tag
     if (isMounted) {
       document.documentElement.setAttribute("data-theme", theme)
-
-      // Store the theme in localStorage whenever it changes
       localStorage.setItem("theme", theme)
     }
   }, [theme, isMounted])
@@ -84,85 +88,77 @@ export default function Navbar() {
     setTheme((prev) => (prev === "corporate" ? "business" : "corporate"))
   }
 
-  const toggleMobileMenu = () => {
-    setIsMobileMenuOpen((prev) => !prev)
+  const toggleMenu = (key, event) => {
+    if (event) event.preventDefault()
+    setOpenMenus((prev) => ({ ...prev, [key]: !prev[key] }))
   }
 
-  const toggleSubmenu = (index, event) => {
-    // Prevent default link behavior (navigation)
-    if (navItems[index].submenu) {
-      event.preventDefault()
-    }
-
-    // Toggle submenu visibility
-    setActiveSubmenus((prevState) => {
-      const newState = [...prevState]
-      newState[index] = !newState[index]
-      return newState
-    })
-  }
-
-  if (!isMounted) {
-    return null // Return null or a loading spinner until the component is mounted on the client
-  }
+  if (!isMounted) return null
 
   return (
     <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-max max-w-full md:top-4">
-      <div className="flex md:justify-between items-center gap-2 bg-base-100 text-base-content p-2 px-4 rounded-full shadow-md backdrop-blur-md w-full">
-        {/* Home Button */}
+      <div className="flex md:justify-between items-center gap-2 bg-base-200 text-base-content p-2 px-4 rounded-full shadow-md backdrop-blur-md w-full">
         <a href="/" className="btn btn-circle btn-ghost">
           <HomeIcon className="h-5 w-5" />
         </a>
 
-        {/* Mobile Toggle Button */}
         <button
           className="md:hidden btn btn-circle btn-ghost"
-          onClick={toggleMobileMenu}
+          onClick={() => setIsMobileMenuOpen((prev) => !prev)}
         >
           <Bars3Icon className="h-5 w-5" />
         </button>
 
-        {/* Navigation Items */}
         <div className="hidden md:flex gap-4 items-center w-full">
-          {navItems.map((item, index) => (
+          {navItems.map((item) => (
             <div key={item.name} className="relative group">
               <a
                 href={item.href}
+                onClick={(e) => item.submenu && toggleMenu(item.name, e)}
                 className={`btn btn-ghost btn-sm rounded-full flex gap-2 items-center ${pathname === item.href ? "bg-base-300" : ""}`}
-                onClick={(event) => item.submenu && toggleSubmenu(index, event)} // Handle submenu toggle
               >
                 {item.icon}
                 <span className="hidden sm:inline">{item.name}</span>
               </a>
 
-              {/* Submenu */}
-              {item.submenu && activeSubmenus[index] && (
-                <div className=" absolute left-0 top-full mt-2 invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-200 flex flex-col bg-base-100 shadow-md rounded-lg p-2 z-50">
+              {item.submenu && openMenus[item.name] && (
+                <div className="absolute left-0 top-full mt-2 bg-base-100 shadow-md rounded-lg p-2 z-50">
                   {item.submenu.map((sub) => (
-                    <a
-                      key={sub.name}
-                      href={sub.href}
-                      className=" px-4 py-2 hover:bg-base-200 rounded-md whitespace-nowrap"
-                    >
-                      {sub.name}
-                    </a>
+                    <div key={sub.name} className="relative group">
+                      <a
+                        href={sub.href}
+                        onClick={(e) => sub.submenu && toggleMenu(sub.name, e)}
+                        className="px-4 py-2 hover:bg-base-200 rounded-md whitespace-nowrap flex justify-between items-center w-full"
+                      >
+                        {sub.name}
+                        {sub.submenu && <span className="ml-2">▸</span>}
+                      </a>
+
+                      {sub.submenu && openMenus[sub.name] && (
+                        <div className="absolute left-full top-0 ml-2 bg-base-100 shadow-md rounded-lg p-2 z-50">
+                          {sub.submenu.map((nested) => (
+                            <a
+                              key={nested.name}
+                              href={nested.href}
+                              className="px-4 py-2 hover:bg-base-200 rounded-md whitespace-nowrap block"
+                            >
+                              {nested.name}
+                            </a>
+                          ))}
+                        </div>
+                      )}
+                    </div>
                   ))}
                 </div>
               )}
             </div>
           ))}
 
-          {/* Theme Toggle */}
           <button onClick={toggleTheme} className="btn btn-circle btn-ghost">
-            {theme === "corporate" ? (
-              <SunIcon className="h-5 w-5" />
-            ) : (
-              <MoonIcon className="h-5 w-5" />
-            )}
+            {theme === "corporate" ? <SunIcon className="h-5 w-5" /> : <MoonIcon className="h-5 w-5" />}
           </button>
         </div>
 
-        {/* Mobile Menu */}
         {isMobileMenuOpen && (
           <motion.div
             className="md:hidden absolute top-16 left-1/2 -translate-x-1/2 bg-base-100 rounded-lg shadow-md w-max p-4 flex flex-col gap-4 items-start justify-start"
@@ -171,40 +167,52 @@ export default function Navbar() {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
           >
-            {navItems.map((item, index) => (
+            {navItems.map((item) => (
               <div key={item.name}>
                 <a
                   href={item.href}
+                  onClick={(e) => item.submenu && toggleMenu(item.name, e)}
                   className={`btn btn-ghost btn-sm rounded-full flex gap-2 items-center ${pathname === item.href ? "bg-base-300" : ""}`}
-                  onClick={(event) => item.submenu && toggleSubmenu(index, event)} // Handle submenu toggle
                 >
                   {item.icon}
                   <span>{item.name}</span>
                 </a>
-                {/* Submenu for Mobile */}
-                {item.submenu && activeSubmenus[index] && (
-                  <div className="flex flex-col mt-2">
+
+                {item.submenu && openMenus[item.name] && (
+                  <div className="flex flex-col mt-2 ml-4">
                     {item.submenu.map((sub) => (
-                      <a
-                        key={sub.name}
-                        href={sub.href}
-                        className=" px-4 py-2 hover:bg-base-200 rounded-md"
-                      >
-                        {sub.name}
-                      </a>
+                      <div key={sub.name}>
+                        <a
+                          href={sub.href}
+                          onClick={(e) => sub.submenu && toggleMenu(sub.name, e)}
+                          className="px-4 py-2 hover:bg-base-200 rounded-md flex justify-between items-center"
+                        >
+                          {sub.name}
+                          {sub.submenu && <span>▸</span>}
+                        </a>
+
+                        {sub.submenu && openMenus[sub.name] && (
+                          <div className="flex flex-col ml-4">
+                            {sub.submenu.map((nested) => (
+                              <a
+                                key={nested.name}
+                                href={nested.href}
+                                className="px-4 py-2 hover:bg-base-200 rounded-md"
+                              >
+                                {nested.name}
+                              </a>
+                            ))}
+                          </div>
+                        )}
+                      </div>
                     ))}
                   </div>
                 )}
               </div>
             ))}
 
-            {/* Theme Toggle */}
             <button onClick={toggleTheme} className="btn btn-circle btn-ghost mt-4">
-              {theme === "corporate" ? (
-                <SunIcon className="h-5 w-5" />
-              ) : (
-                <MoonIcon className="h-5 w-5" />
-              )}
+              {theme === "corporate" ? <SunIcon className="h-5 w-5" /> : <MoonIcon className="h-5 w-5" />}
             </button>
           </motion.div>
         )}
