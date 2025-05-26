@@ -2,7 +2,6 @@
 
 import { usePathname } from "next/navigation"
 import {
-  HomeIcon,
   Cog6ToothIcon,
   GlobeAltIcon,
   StarIcon,
@@ -15,6 +14,7 @@ import {
 } from "@heroicons/react/24/outline"
 import { useEffect, useState } from "react"
 import { motion } from "framer-motion"
+import Image from "next/image"
 
 const navItems = [
   { name: "About", href: "/about", icon: <GlobeAltIcon className="h-5 w-5" /> },
@@ -98,8 +98,18 @@ export default function Navbar() {
   return (
     <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-max max-w-full md:top-4">
       <div className="flex md:justify-between items-center gap-2 bg-base-200 text-base-content p-2 px-4 rounded-full shadow-md backdrop-blur-md w-full">
-        <a href="/" className="btn btn-circle btn-ghost">
-          <HomeIcon className="h-5 w-5" />
+        {/* Logo - Replaced HomeIcon */}
+        <a href="/" className="flex items-center gap-2 mr-2">
+          <div className="relative h-8 w-8 min-w-[72px]">
+            <Image
+              src="/shehab.png" // Make sure to add your logo.png to public folder
+              alt="Company Logo"
+              fill
+              className="object-contain"
+              priority
+            />
+          </div>
+          {/* <span className="font-bold hidden sm:inline">StratEdge</span> */}
         </a>
 
         <button
@@ -167,6 +177,19 @@ export default function Navbar() {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
           >
+            {/* Mobile Logo */}
+            {/* <div className="flex items-center gap-2 mb-2">
+              <div className="relative h-8 w-8">
+                <Image
+                  src="/shehab.png"
+                  alt="Company Logo"
+                  fill
+                  className="object-contain"
+                />
+              </div>
+              <span className="font-bold">StratEdge</span>
+            </div> */}
+
             {navItems.map((item) => (
               <div key={item.name}>
                 <a
