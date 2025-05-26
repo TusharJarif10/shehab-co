@@ -365,7 +365,7 @@ export default function Home() {
               viewport={{ once: true }}
               className="text-lg text-base-content/80 max-w-3xl mx-auto"
             >
-              Tailored strategies and innovative approaches to drive your business forward in today's competitive landscape.
+              Tailored strategies and innovative approaches to drive your business forward in todays competitive landscape.
             </motion.p>
           </motion.div>
 
