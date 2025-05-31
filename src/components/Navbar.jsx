@@ -1,4 +1,4 @@
-"use client"
+ "use client"
 
 import { usePathname } from "next/navigation"
 import {
@@ -49,11 +49,11 @@ const navItems = [
       {
         name: "Services", href: "/shehab/services",
         submenu: [
-          { name: "SEO", href: "/shehab/services/seo" },
-          { name: "PPC", href: "/shehab/services/ppc" },
-          { name: "Social Media", href: "/shehab/services/social" },
-          { name: "Content", href: "/shehab/services/content" },
-          { name: "Email Marketing", href: "/shehab/services/email" },
+          { name: "Digital Marketing Services", href: "/shehab/services/seo" },
+          { name: "Enterprise Software & IT Solutions", href: "/shehab/services/ppc" },
+          { name: "Business Analytics & Market Research", href: "/shehab/services/social" },
+          { name: "Content, Design & Production", href: "/shehab/services/content" },
+          { name: "Marketplace Optimization", href: "/shehab/services/email" },
         ],
       },
       { name: "Case Studies", href: "/shehab/caseStudies" },
